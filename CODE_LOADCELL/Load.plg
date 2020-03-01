@@ -1,0 +1,16 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\Admin\Desktop\codemau\Load.uvproj
+Project File Date:  12/25/2019
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+compiling lcd.c...
+linking...
+Program Size: data=72.1 xdata=0 code=3317
+creating hex file from "Load"...
+"Load" - 0 Error(s), 0 Warning(s).

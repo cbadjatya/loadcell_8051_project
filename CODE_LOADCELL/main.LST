@@ -1,0 +1,115 @@
+C51 COMPILER V9.01   MAIN                                                                  12/28/2019 20:38:11 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\keilC\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <lcd.h>
+   2          #include <intrins.h>
+   3          #include <stdio.h>
+   4          sbit HX711_DOUT=P2^1; 
+   5          sbit HX711_SCK=P2^0; 
+   6          char buf1[10];
+   7          
+   8          
+   9          //***************Code by LE XUAN ANH*******************//
+  10           void delay_ms(unsigned int t)
+  11           {
+  12   1              unsigned int i,j;
+  13   1              for(i=0;i<t;i++)
+  14   1              for(j=0;j<125;j++);
+  15   1      }
+  16          void Delay__hx711_us(void)
+  17          {
+  18   1              _nop_();
+  19   1              _nop_();
+  20   1      }
+  21          //************************//
+  22          unsigned long HX711_Read(void)  
+  23          {
+  24   1              unsigned long count; 
+  25   1              unsigned char i; 
+  26   1              HX711_DOUT=1; 
+  27   1              Delay__hx711_us();
+  28   1              HX711_SCK=0; 
+  29   1              count=0; 
+  30   1              while(HX711_DOUT); 
+  31   1              for(i=0;i<24;i++)
+  32   1              { 
+  33   2                      HX711_SCK=1; 
+  34   2                      count=count<<1; 
+  35   2                      HX711_SCK=0; 
+  36   2                      if(HX711_DOUT)
+  37   2                              count++; 
+  38   2              } 
+  39   1              HX711_SCK=1; 
+  40   1          count=count^0x800000;
+  41   1              Delay__hx711_us();
+  42   1              HX711_SCK=0;  
+  43   1              return(count);
+  44   1      }
+  45          
+  46          void main()
+  47          {
+  48   1      unsigned int temp,i;
+  49   1      float gram=0,k,a1,a2,a3,a4;
+  50   1          Init_LCD1602();                                                             
+  51   1              LCD1602_write_com(0x80);                                        
+  52   1              LCD1602_write_word("Can dien tu-VXL");
+  53   1              for(i=0;i<20;i++)                       // LAY MAU LAN 1
+  54   1        {
+  55   2        
+C51 COMPILER V9.01   MAIN                                                                  12/28/2019 20:38:11 PAGE 2   
+
+  56   2              temp= HX711_Read();                     //DOC VE ADC
+  57   2      
+  58   2               a1+=temp;
+  59   2               delay_ms(20);
+  60   2        }
+  61   1        
+  62   1       a2=a1/20;
+  63   1               
+  64   1               
+  65   1        
+  66   1                              
+  67   1      
+  68   1       while(1)
+  69   1       {
+  70   2       LCD1602_write_com(0x80+0x40+8);
+  71   2               a3 =0;
+  72   2              
+  73   2              for(i=0;i<30;i++)          //LAY MAU LAN 2
+  74   2                {
+  75   3                      temp= HX711_Read();
+  76   3                      a3+=temp;
+  77   3                      delay_ms(20);
+  78   3                }
+  79   2                a4=a3/30;
+  80   2                k=a4-a2;                                      //MAU LAN 2-LAN1
+  81   2                if(k<0) k=0;
+  82   2                gram=71428.5*(float)(k/16777216.0);   //CHUYEN DOI RA GRAM
+  83   2                sprintf(buf1,"%.0f g   ",gram);          //HIEN THI LCD
+  84   2                LCD1602_write_word(buf1);                     
+  85   2                              
+  86   2              
+  87   2      
+  88   2       
+  89   2       }
+  90   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    458    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10      24
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
